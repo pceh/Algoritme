@@ -56,39 +56,62 @@ namespace Leerdoel1
        
         private void Korting_Click(object sender, RoutedEventArgs e)
         {
-            int positie = klantlijst.SelectedIndex;
-            klantClass.user_status = 1;
-            string aantal = nieuw[positie].ToString(); //Haal aantal aangebrachten klanten op door user_status = 1 
+
+            //Haal aantal aangebrachten klanten op door user_status = 1 
 
             //Probleem met afronden
             //Door de ToString 
             //Problemen met mijn override ToString(), user_status wordt door 'klantlijst_SelectionChanged' steeds op 4 gezet
-            int selectklant = Convert.ToInt32(aantal);
-            string afronden = prod.korting(prod.bedrag, selectklant).ToString();
-            decimal afronden2 = Convert.ToDecimal(afronden);
-            decimal kortingBedrag = Decimal.Round(afronden2, 2);
+            //int positie = klantlijst.SelectedIndex;
+            //string aantal = nieuw[positie].ToString(); //Haal aantal aangebrachten klanten op door user_status = 1 
+            try
+            {
+                foreach (var item in nieuw)
+                {
+                    item.user_status = 1;
 
-            newprijs.Content = afronden.ToString();
+
+                    int positie = klantlijst.SelectedIndex;
+                    newprijs.Content = nieuw[positie].ToString();
+                    int selectklant = Convert.ToInt32(nieuw[positie].ToString());
+                    //Heel "netjes" afronden
+                    string afronden = prod.korting(prod.bedrag, selectklant,ref prod.reset).ToString(); //Methode in Product.cs (Line:31)
+                    decimal afronden2 = Convert.ToDecimal(afronden);
+                    decimal kortingBedrag = Decimal.Round(afronden2, 2);
+                    newprijs.Content = kortingBedrag.ToString();
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                MessageBox.Show("Je moet een klant kiezen!"); //Try-catch zat in de foreach loop, kreeg 4x (4 list items) aan messageboxes
+
+            }
+            
+            //Probleem met afronden
+            //Door de ToString 
+            //Problemen met mijn override ToString(), user_status wordt door 'klantlijst_SelectionChanged' steeds op 4 gezet
             
 
         }
 
         private void klantlijst_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //Gebruikersnaam weergeven bij korting << WERKT NIET
+
             //item.user_status = 4;
 
             //int positie = klantlijst.SelectedIndex;
             //newnaam.Content = nieuw[positie].ToString();
 
             //Zonder foreach krijg ik steeds het aantal aangebrachten aan (case:1 Klant.cs)
-            foreach (var item in nieuw)
-            {
-                item.user_status = 4;
+            //foreach (var item in nieuw)
+            //{
+            //item.user_status = 1;
+            //int positie = klantlijst.SelectedIndex;
+            //newnaam.Content = nieuw[positie].ToString();
 
-                int positie = klantlijst.SelectedIndex;
-                newnaam.Content = nieuw[positie].ToString();
-                item.user_status = 1;
-            }
+            //item.user_status = 1;
+            //}
 
 
         }
